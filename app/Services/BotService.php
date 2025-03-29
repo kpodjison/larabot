@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class BotService
@@ -28,16 +29,20 @@ class BotService
 
     }
 
-    public function generateResponse(string $prompt)
+    public function generateResponse(string $prompt, $sessionId)
     {
-        $engineeredPrompt = $this->applyPromptEngineering($prompt);
+        $engineeredPrompt    = $this->applyPromptEngineering($prompt);
+        $conversationHistory = Cache::get("chat_history_{$sessionId}", []);
+
+        $conversationHistory[] = ['role' => 'user', 'content' => $engineeredPrompt];
+
+        if (count($conversationHistory) > 10) {
+            $conversationHistory = array_slice($conversationHistory, -10);
+        }
 
         $postData = [
             "model"    => $this->model,
-            "messages" => [
-                ["role"   => "user",
-                    "content" => $engineeredPrompt],
-            ],
+            "messages" => $conversationHistory,
             "stream"   => false,
         ];
 
@@ -110,6 +115,23 @@ class BotService
     assistant:";
 
         return $engineeredPrompt;
-
     }
+
+    public function clearChatHistory($sessionId)
+    {
+        if (Cache::has("chat_history_{$sessionId}")) {
+            Cache::forget("chat_history_{$sessionId}");
+            Log::info("Cache for user with sessionId: {$sessionId} cleared");
+        } else {
+            Log::info('No cache exists for user with sessionId: ' . $sessionId);
+        }
+    }
+
+    public function resetUserChat($sessionId)
+    {
+        $this->clearChatHistory($sessionId);
+        return response()->json(['message' => 'Chat history cleared successfully.']);
+    }
+
+    
 }

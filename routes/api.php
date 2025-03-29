@@ -12,7 +12,18 @@ Route::get('/user', function (Request $request) {
 Route::post('/bot', function (Request $request) {
 
     $bot = new BotService();
-    $answer = $bot->generateResponse($request->prompt);
+    $answer = $bot->generateResponse($request->prompt,"jvc12343"); //you pass sessionId dynamically
 
     return $answer;
 });
+
+Route::get('/bot/clear-cache', function () {
+ 
+
+    $bot    = new BotService();
+    $answer = $bot->resetUserChat("jvc12343"); //you pass sessionId dynamically
+
+
+    return $answer;
+});
+
