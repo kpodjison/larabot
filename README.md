@@ -8,6 +8,10 @@ A powerful Laravel-based AI bot built using HuggingFace API and advanced prompt 
 - HuggingFace Inference API
 - GuzzleHTTP  (For API request)
 
+**💡**: [Hugging Face API-Inference DOCS](https://huggingface.co/docs/api-inference/tasks/chat-completion)
+
+**💡**: [Supported Models](https://huggingface.co/docs/api-inference/supported-models)
+
 ## Installation
 
 1. Clone the repository
