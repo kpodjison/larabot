@@ -44,7 +44,6 @@ A powerful Laravel-based AI bot built using HuggingFace API and advanced prompt 
 
     Example of context-aware conversations
 
-        ```json
         {
             "prompt":"I want to include topics like routes, controllers, and views.",
             "userId":"jvc12343"
